@@ -4,13 +4,13 @@ public class Day1 implements Solution {
 
   public static void main(String[] args) {
     System.out.println(new Day1().solvePart1(FileInput.of(
-        "com.github.kboeckler.adventOfCode/Day1.txt").asString()));
+        "Day1.txt").asString()));
     System.out.println(new Day1().solvePart2(FileInput.of(
-        "com.github.kboeckler.adventOfCode/Day1.txt").asString()));
+        "Day1.txt").asString()));
   }
 
   @Override
-  public String solvePart1(String input) {
+  public int solvePart1(String input) {
     String[] rows = input.split("\n");
     Integer lastValue = null;
     int countOfIncrements = 0;
@@ -21,11 +21,11 @@ public class Day1 implements Solution {
       }
       lastValue = value;
     }
-    return String.valueOf(countOfIncrements);
+    return countOfIncrements;
   }
 
   @Override
-  public String solvePart2(String input) {
+  public int solvePart2(String input) {
     String[] rows = input.split("\n");
     Integer lastValue = null;
     int countOfIncrements = 0;
@@ -37,6 +37,6 @@ public class Day1 implements Solution {
       }
       lastValue = value;
     }
-    return String.valueOf(countOfIncrements);
+    return countOfIncrements;
   }
 }

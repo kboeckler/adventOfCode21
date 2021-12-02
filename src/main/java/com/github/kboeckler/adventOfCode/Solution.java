@@ -1,6 +1,6 @@
 package com.github.kboeckler.adventOfCode;
 
 public interface Solution {
-  String solvePart1(String input);
-  String solvePart2(String input);
+  int solvePart1(String input);
+  int solvePart2(String input);
 }
