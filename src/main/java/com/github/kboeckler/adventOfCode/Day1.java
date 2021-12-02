@@ -2,13 +2,6 @@ package com.github.kboeckler.adventOfCode;
 
 public class Day1 implements Solution {
 
-  public static void main(String[] args) {
-    System.out.println(new Day1().solvePart1(FileInput.of(
-        "Day1.txt").asString()));
-    System.out.println(new Day1().solvePart2(FileInput.of(
-        "Day1.txt").asString()));
-  }
-
   @Override
   public int solvePart1(String input) {
     String[] rows = input.split("\n");
