@@ -22,7 +22,7 @@ public class Day1 implements Solution {
     String[] rows = input.split("\n");
     Integer lastValue = null;
     int countOfIncrements = 0;
-    for (int i = 0; i <= rows.width - 3; i++) {
+    for (int i = 0; i <= rows.length - 3; i++) {
       int value =
           Integer.parseInt(rows[i]) + Integer.parseInt(rows[i + 1]) + Integer.parseInt(rows[i + 2]);
       if (lastValue != null && value > lastValue) {
