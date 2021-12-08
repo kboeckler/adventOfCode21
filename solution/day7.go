@@ -30,19 +30,25 @@ func (d Day7) SolvePart1(input string) int {
 func (d Day7) SolvePart2(input string) int {
 	numbersAsString := strings.Split(input, ",")
 	numbers := make([]int, 0, len(numbersAsString))
+	maxNumber := -1
 	for _, numberAsString := range numbersAsString {
 		number, _ := strconv.Atoi(numberAsString)
 		numbers = append(numbers, number)
+		if number > maxNumber {
+			maxNumber = number
+		}
 	}
-	sum := 0
-	for _, number := range numbers {
-		sum = sum + number
+	bestFuel := 999999999
+	for i := 0; i <= maxNumber; i++ {
+		fuel := 0
+		for _, number := range numbers {
+			dist := math.Abs(float64(number - i))
+			fuelPart := int((dist * (dist + 1)) / 2)
+			fuel = fuel + fuelPart
+		}
+		if fuel < bestFuel {
+			bestFuel = fuel
+		}
 	}
-	average := int(math.Round(float64(sum) / float64(len(numbers))))
-	fuel := 0
-	for _, number := range numbers {
-		delta := int(math.Abs(float64(number - average)))
-		fuel = fuel + delta
-	}
-	return fuel
+	return bestFuel
 }
