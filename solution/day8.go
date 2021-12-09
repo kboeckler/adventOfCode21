@@ -1,6 +1,8 @@
 package solution
 
 import (
+	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -22,14 +24,34 @@ func (d Day8) SolvePart1(input string) int {
 
 func (d Day8) SolvePart2(input string) int {
 	displays := parseDisplays(input)
+	sum := 0
 	for _, display := range displays {
-		_ = display
-		for _, part := range display.two {
-			_ = part
+		for _, letter := range display.two {
+			display.Extend(letter, "cf")
 		}
-		_ = Setting{nil, nil, nil, nil, nil, nil, nil}
+		for _, letter := range display.three {
+			display.Extend(letter, "acf")
+		}
+		for _, letter := range display.four {
+			display.Extend(letter, "bcdf")
+		}
+		for _, letter := range display.seven {
+			display.Extend(letter, "abcdefg")
+		}
+		var validAssignment *Assignment = nil
+		for _, assignment := range display.assignments {
+			if display.fulfillsAll(assignment) {
+				validAssignment = &assignment
+			}
+		}
+		fourDigitAsString := ""
+		for _, resolvedNumber := range display.resolvedOutvals(*validAssignment) {
+			fourDigitAsString = fmt.Sprintf("%s%d", fourDigitAsString, resolvedNumber)
+		}
+		fourDigit, _ := strconv.ParseInt(fourDigitAsString, 10, 0)
+		sum = sum + int(fourDigit)
 	}
-	return 0
+	return sum
 }
 
 func parseDisplays(input string) []*Display {
@@ -57,6 +79,21 @@ type Display struct {
 	invals, outvals         []string
 	two, three, four, seven string
 	others                  []string
+	assignments             []Assignment
+}
+
+func (d Display) Extend(letter rune, values string) {
+	// TODO
+}
+
+func (d Display) fulfillsAll(assignment Assignment) bool {
+	// TODO
+	return false
+}
+
+func (d Display) resolvedOutvals(assignment Assignment) []int {
+	// TODO
+	return make([]int, 0)
 }
 
 func CreateDisplay(invals, outvals []string) *Display {
@@ -65,7 +102,7 @@ func CreateDisplay(invals, outvals []string) *Display {
 	var four string
 	var seven string
 	others := make([]string, 0)
-	for _, val := range outvals {
+	for _, val := range invals {
 		if len(val) == 2 {
 			two = val
 		} else if len(val) == 3 {
@@ -76,10 +113,14 @@ func CreateDisplay(invals, outvals []string) *Display {
 			others = append(others, val)
 		}
 	}
-	display := Display{invals, outvals, two, three, four, seven, others}
+	display := Display{invals, outvals, two, three, four, seven, others, make([]Assignment, 0)}
 	return &display
 }
 
-type Setting struct {
-	a, b, c, d, e, f, g *rune
+type Assignment struct {
+	vals map[rune]rune
+}
+
+func CreateAssignment() Assignment {
+	return Assignment{make(map[rune]rune)}
 }
