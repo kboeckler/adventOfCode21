@@ -37,5 +37,6 @@ func allSolutions() []solution.Solution {
 	solutions = append(solutions, solution.Day7{})
 	//solutions = append(solutions, solution.Day8{})
 	solutions = append(solutions, solution.Day9{})
+	solutions = append(solutions, solution.Day10{})
 	return solutions
 }
