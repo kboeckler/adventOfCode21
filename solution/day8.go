@@ -69,10 +69,16 @@ func parseDisplays(input string) []*Display {
 		for _, val := range outrow {
 			outvals = append(outvals, val)
 		}
-		display := CreateDisplay(invals, outvals)
+		numbers := make([]Number, 0) // TODO
+		display := CreateDisplay(invals, outvals, numbers)
 		displays = append(displays, display)
 	}
 	return displays
+}
+
+type Number struct {
+	segments string
+	value    int
 }
 
 type Display struct {
@@ -80,6 +86,7 @@ type Display struct {
 	two, three, four, seven string
 	others                  []string
 	assignments             []Assignment
+	numbers                 []Number
 }
 
 func (d Display) Extend(letter rune, values string) {
@@ -87,16 +94,56 @@ func (d Display) Extend(letter rune, values string) {
 }
 
 func (d Display) fulfillsAll(assignment Assignment) bool {
-	// TODO
-	return false
+	for _, inval := range d.invals {
+		resolvedSegments := ""
+		for _, segment := range inval {
+			resolvedSegments = fmt.Sprintf("%s%c", resolvedSegments, assignment.vals[segment])
+		}
+		_, hasMatch := d.getMatchedNumber(resolvedSegments)
+		if !hasMatch {
+			return false
+		}
+	}
+	return true
+}
+
+func (d Display) getMatchedNumber(resolvedSegments string) (*Number, bool) {
+	lengthOfNum := len(resolvedSegments)
+	for _, numValue := range d.numbers {
+		lengthOfMatch := 0
+		if lengthOfNum == len(numValue.segments) {
+			for _, segment := range numValue.segments {
+				for _, resolvedSegment := range resolvedSegments {
+					if segment == resolvedSegment {
+						lengthOfMatch = lengthOfMatch + 1
+						if lengthOfMatch == lengthOfNum {
+							break
+						}
+					}
+				}
+			}
+		}
+		if lengthOfMatch == lengthOfNum {
+			return &numValue, true
+		}
+	}
+	return nil, false
 }
 
 func (d Display) resolvedOutvals(assignment Assignment) []int {
-	// TODO
+	resolved := make([]Number, 0)
+	for _, outval := range d.outvals {
+		resolvedSegments := ""
+		for _, segment := range outval {
+			resolvedSegments = fmt.Sprintf("%s%c", resolvedSegments, assignment.vals[segment])
+		}
+		resolvedNum, _ := d.getMatchedNumber(resolvedSegments)
+		resolved = append(resolved, *resolvedNum)
+	}
 	return make([]int, 0)
 }
 
-func CreateDisplay(invals, outvals []string) *Display {
+func CreateDisplay(invals, outvals []string, numbers []Number) *Display {
 	var two string
 	var three string
 	var four string
@@ -113,7 +160,7 @@ func CreateDisplay(invals, outvals []string) *Display {
 			others = append(others, val)
 		}
 	}
-	display := Display{invals, outvals, two, three, four, seven, others, make([]Assignment, 0)}
+	display := Display{invals, outvals, two, three, four, seven, others, make([]Assignment, 0), numbers}
 	return &display
 }
 
