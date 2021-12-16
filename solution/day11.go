@@ -1,8 +1,6 @@
 package solution
 
 import (
-	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -11,6 +9,18 @@ type Day11 struct {
 }
 
 func (d Day11) SolvePart1(input string) int {
+	return solveDay11(input, func(step, flashesInThisRound, flashesTotal int) (bool, int) {
+		return step == 99, flashesTotal
+	})
+}
+
+func (d Day11) SolvePart2(input string) int {
+	return solveDay11(input, func(step, flashesInThisRound, flashesTotal int) (bool, int) {
+		return flashesInThisRound == 100, step + 1
+	})
+}
+
+func solveDay11(input string, cond func(int, int, int) (bool, int)) int {
 	rows := strings.Split(input, "\n")
 	cells := make([]int, 0)
 	width := len(rows[0])
@@ -21,7 +31,7 @@ func (d Day11) SolvePart1(input string) int {
 		}
 	}
 	amountOfFlashes := 0
-	for i := 0; i < 100; i++ {
+	for i := 0; true; i++ {
 		for j := range cells {
 			cells[j] = cells[j] + 1
 		}
@@ -42,8 +52,10 @@ func (d Day11) SolvePart1(input string) int {
 						flashes[y*width+x] = true
 						for k := -1; k <= 1; k++ {
 							for l := -1; l <= 1; l++ {
-								cellpos := (y+k)*width + (x + l)
-								if cellpos >= 0 && cellpos < len(cells) {
+								othery := (y + k) * width
+								otherx := x + l
+								cellpos := othery + otherx
+								if cellpos >= 0 && cellpos < len(cells) && otherx >= 0 && otherx < width {
 									cells[cellpos] = cells[cellpos] + 1
 								}
 							}
@@ -58,22 +70,10 @@ func (d Day11) SolvePart1(input string) int {
 				cells[j] = 0
 			}
 		}
-		printCells(cells, width)
-	}
-	return amountOfFlashes
-}
-
-func printCells(cells []int, width int) {
-	for i, c := range cells {
-		fmt.Fprintf(os.Stderr, "%d", c)
-		if i > 0 && i%width == 0 {
-			fmt.Fprintf(os.Stderr, "\n")
+		end, result := cond(i, len(flashes), amountOfFlashes)
+		if end {
+			return result
 		}
 	}
-	fmt.Fprintf(os.Stderr, "\n---\n")
-}
-
-func (d Day11) SolvePart2(input string) int {
-	//TODO implement me
-	return 0
+	return -1
 }
