@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>AdventOfCode21</title>
+</head>
+<body>
+<div id="results"></div>
+<script>
+    day12 = {
+        name: "Day12",
+        solvePart1: function (input) {
+            const rows = input.split("\n")
+            const outgoings = {}
+            for (let i in rows) {
+                const row = rows[i]
+                const edge = row.split("-")
+                let outs = outgoings[edge[0]]
+                if (!outs) {
+                    outs = [];
+                }
+                outs.push(edge[1])
+                outgoings[edge[0]] = outs
+                let outsRev = outgoings[edge[1]]
+                if (!outsRev) {
+                    outsRev = [];
+                }
+                outsRev.push(edge[0])
+                outgoings[edge[1]] = outsRev
+            }
+            for (key in outgoings) {
+                console.log(key)
+                console.log("-" + outgoings[key])
+            }
+            return 0
+        },
+        solvePart2: function (input) {
+            return 0
+        }
+    }
+
+    async function solve(days) {
+        let resultString = ""
+        for (let i in days) {
+            const day = days[i]
+            const response = await fetch("src/main/resources/com/github/kboeckler/adventOfCode/" + day.name + ".txt");
+            const input = await response.text();
+            resultString += "Solution " + day.name + " - Part1: " + day.solvePart1(input) + " Part2: " + day.solvePart2(input) + "<br/>";
+        }
+        document.getElementById('results').innerHTML = resultString;
+    }
+
+    solve({day12});
+</script>
+</body>
+</html>

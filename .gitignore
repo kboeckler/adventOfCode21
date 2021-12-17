@@ -28,3 +28,4 @@ hs_err_pid*
 out/
 build/
 .iml
+node_modules/

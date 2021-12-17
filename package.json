@@ -1,0 +1,23 @@
+{
+  "name": "adventofcode21",
+  "version": "1.0.0",
+  "description": "Solving https://adventofcode.com/2021",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/http-server -a localhost -p 8000 -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kboeckler/adventOfCode21.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kboeckler/adventOfCode21/issues"
+  },
+  "homepage": "https://github.com/kboeckler/adventOfCode21#readme",
+  "dependencies": {
+    "http-server": "^14.0.0"
+  }
+}
