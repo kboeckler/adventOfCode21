@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>AdventOfCode21</title>
+    <title>AdventOfCode21</title>
 </head>
 <body>
 <div id="results"></div>
@@ -8,7 +8,49 @@
     day12 = {
         name: "Day12",
         solvePart1: function (input) {
-            const rows = input.split("\n")
+            const rows = input.replaceAll("\r\n", "\n").split("\n")
+            return this.solveDay12(rows).length
+        },
+        solvePart2: function (input) {
+            const rows = input.replaceAll("\r\n", "\n").split("\n")
+            const smallCaves = {}
+            for (let i in rows) {
+                const row = rows[i]
+                const edge = row.split("-")
+                if (edge[0].toLowerCase() === edge[0] && edge[0] !== "start" && edge[0] !== "end") {
+                    smallCaves[edge[0]] = true
+                }
+                if (edge[1].toLowerCase() === edge[1] && edge[1] !== "start" && edge[1] !== "end") {
+                    smallCaves[edge[1]] = true
+                }
+            }
+            const pathsOfAllModifications = []
+            for (let smallCave in smallCaves) {
+                const modifiedRows = []
+                for (let i in rows) {
+                    const row = rows[i]
+                    modifiedRows.push(row)
+                    if (row.replace(smallCave + "-", "").replace("-" + smallCave, "") !== row) {
+                        modifiedRows.push(row.replace(smallCave + "-", smallCave + "copy-").replaceAll("-" + smallCave, "-" + smallCave + "copy"))
+                    }
+                }
+                const pathsOfModification = this.solveDay12(modifiedRows)
+                for (let i in pathsOfModification) {
+                    pathsOfAllModifications.push(pathsOfModification[i].replace(smallCave + "copy", smallCave))
+                }
+            }
+            const uniquePathsOfModification = []
+            const alreadyAddedPaths = {}
+            for (let i in pathsOfAllModifications) {
+                const replacedPath = pathsOfAllModifications[i]
+                if (!alreadyAddedPaths[replacedPath]) {
+                    alreadyAddedPaths[replacedPath] = true
+                    uniquePathsOfModification.push(replacedPath)
+                }
+            }
+            return uniquePathsOfModification.length
+        },
+        solveDay12: function (rows) {
             const outgoings = {}
             for (let i in rows) {
                 const row = rows[i]
@@ -26,14 +68,38 @@
                 outsRev.push(edge[0])
                 outgoings[edge[1]] = outsRev
             }
-            for (key in outgoings) {
-                console.log(key)
-                console.log("-" + outgoings[key])
-            }
-            return 0
+            return this.findPaths("start", outgoings)
         },
-        solvePart2: function (input) {
-            return 0
+        findPaths: function (startVertex, edges) {
+            const paths = []
+            if (startVertex === "end") {
+                paths.push(startVertex)
+            } else {
+                for (const i in edges[startVertex]) {
+                    const nextVertex = edges[startVertex][i]
+                    let nextEdges = edges
+                    if (startVertex.toLowerCase() === startVertex) {
+                        nextEdges = {}
+                        for (let key in edges) {
+                            const edge = edges[key]
+                            if (key !== startVertex) {
+                                const edgesWithoutMe = []
+                                for (let j in edge) {
+                                    if (edge[j] !== startVertex) {
+                                        edgesWithoutMe.push(edge[j])
+                                    }
+                                }
+                                nextEdges[key] = edgesWithoutMe
+                            }
+                        }
+                    }
+                    const nextPaths = this.findPaths(nextVertex, nextEdges)
+                    for (let j in nextPaths) {
+                        paths.push(startVertex + "-" + nextPaths[j])
+                    }
+                }
+            }
+            return paths
         }
     }
 
